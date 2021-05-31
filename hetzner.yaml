@@ -1,0 +1,33 @@
+- name: Create machine on Hetzner
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create SSH key
+      hcloud_ssh_key:
+        name: admin-key
+        public_key: "{{ public_ssh_key }}"
+        state: present
+      register: mining_key
+
+    - name: Create rocketpool machine
+      hcloud_server:
+        name: "rocketpool-node"
+        image: "debian-10"
+        server_type: "{{ hcloud.server_type }}"
+        user_data: |
+          #cloud-config
+          users:
+          - name: admin
+            sudo: ALL=(ALL) NOPASSWD:ALL
+            ssh_authorized_keys:
+              - {{ public_ssh_key }}"
+        ssh_keys:
+          - admin-key # To make hetzner stop mailing me..
+        labels:
+          miner: "yes"
+      register: mining_server
+
+    - name: Wait for SSH on {{ mining_server.hcloud_server.ipv4_address }}
+      wait_for:
+        port: 22
+        host: "{{ mining_server.hcloud_server.ipv4_address }}"
