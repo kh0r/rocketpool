@@ -1,3 +1,0 @@
-plugin: hcloud
-groups:
-  miners: "'miner' in (labels|list)"

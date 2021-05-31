@@ -41,7 +41,7 @@
           # Enable IPv4 traffic forwarding. (for docker)
           net.ipv4.ip_forward: 1
 
-- name: Create and provision the users 'admin' and 'docker'
+- name: Create and provision the users 'admin' and 'rp' (RocketPool)
   hosts: miners
   become: yes
   tasks:
@@ -62,9 +62,9 @@
         regexp: '^%admin'
         line: '%admin ALL=(ALL) NOPASSWD: ALL'
         validate: visudo -cf %s
-    - name: Add user docker
+    - name: Add user rp
       user:
-        name: docker
+        name: rp
         groups: docker
         shell: /bin/bash
         append: yes

@@ -4,7 +4,14 @@ unset MINER
 echo "Switching to $ENV environment"
 if [ "$ENV" == "vagrant" ]
 then 
-    MINER="vagrant = ansible_host=127.0.0.1 ansible_port=2222"
+    MINER="vagrant-miner = ansible_host=127.0.0.1 ansible_port=2222"
+    rm inventory/hcloud.yaml 2> /dev/null
+else
+    echo "
+plugin: hcloud
+groups:
+  miners: \"'miner' in (labels|list)\"
+" > inventory/hcloud.yaml
 fi
 
 echo "

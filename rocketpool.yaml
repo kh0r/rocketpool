@@ -1,0 +1,30 @@
+- name: Install rocketpool
+  hosts: miners
+  become: yes
+  become_user: rp
+  tasks:
+#    - name: Enable SELinux
+#      ansible.posix.selinux:
+#        policy: targeted
+#        state: enforcing
+
+# Following this guide: https://medium.com/rocket-pool/rocket-pool-v2-5-beta-node-operators-guide-77859891766b
+    - file:
+        state: directory
+        path: ~/bin
+    - name: Download Rocket Pool binary
+      get_url:
+        url: https://github.com/rocket-pool/smartnode-install/releases/download/{{ rocket_pool.version }}/rocketpool-cli-linux-amd64
+        dest: ~/bin/rocketpool
+        mode: u=rwx,g=rx,o=rx
+    - name: Install rocketpool
+      shell: "~/bin/rocketpool service install -d -y --network {{ rocket_pool.network }}"
+    - name: TODO - configure rocketpool (rocketpool service config) 
+      shell: echo "TODO - create the settings.yml"
+    - name: TODO - Start rocketpool
+      shell: echo "TODO - rocketpool service start"
+    - name: TODO - wait for eth1 and eth2 to be in sync
+      shell: echo "TODO - wait for eth1 & eth2"
+    - name: TODO - Init wallet (rocketpool wallet init)
+      shell: echo "TODO - rocketpool wallet recover --password <the-password> --mnemonic <mnemonic>"
+      
