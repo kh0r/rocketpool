@@ -19,3 +19,4 @@ ansible-playbook rocketpool.yaml
 - hardware?
     - https://www.netcup.eu/bestellen/produkt.php?produkt=2604 <--- seems nice like most value for money.
     - https://contabo.com/en/vps/vps-xl-ssd/
+    - inspiration: https://github.com/rel0aded/ansible-role-rocket-pool

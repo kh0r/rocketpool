@@ -11,7 +11,7 @@
 
     - name: Create rocketpool machine
       hcloud_server:
-        name: "rocketpool-node"
+        name: "hetzner-rp-node"
         image: "debian-10"
         server_type: "{{ hcloud.server_type }}"
         user_data: |

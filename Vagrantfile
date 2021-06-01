@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
     end
     
     config.vm.define "rocketpool-miner"
-    config.vm.hostname = "vagrant-miner"
+    config.vm.hostname = "vagrant-rp-node"
     config.vm.box = "debian/buster64"
     config.vm.network "forwarded_port", guest: 30303, host: 30303, protocol: "tcp", id: "eth1 (tcp)"
     config.vm.network "forwarded_port", guest: 30303, host: 30303, protocol: "udp", id: "eth1 (udp)"
