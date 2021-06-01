@@ -12,10 +12,10 @@ ansible-playbook vagrant.yaml
 
 # Provision the host (remember to set HCLOUD_TOKEN when using hetzner)
 ansible-playbook rocketpool.yaml
-
 ```
 
 ### TODO
+- Switch to [pocket](https://github.com/rocket-pool/smartnode-install/blob/458d6e46e19ed4a4165f36f77af76d83647ea755/amd64/rp-smartnode-install/network/pyrmont/config.yml#L71) with the Prater testnet launch
 - hardware?
     - https://www.netcup.eu/bestellen/produkt.php?produkt=2604 <--- seems nice like most value for money.
     - https://contabo.com/en/vps/vps-xl-ssd/
