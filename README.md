@@ -11,7 +11,7 @@ ansible-galaxy install dev-sec.os-hardening dev-sec.ssh-hardening jnv.unattended
 ansible-playbook vagrant.yaml
 
 # Provision the host (remember to set HCLOUD_TOKEN when using hetzner)
-ansible-playbook rocketpool.yaml
+ansible-playbook rocketpool.yaml --ask-vault-pass
 ```
 
 ### TODO
