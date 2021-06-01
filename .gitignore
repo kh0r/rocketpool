@@ -1,3 +1,4 @@
 .vagrant/
 
 inventory/hosts
+inventory/hcloud.yaml
