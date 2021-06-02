@@ -24,6 +24,14 @@
         test_command: uptime
       when: reboot_required_file.stat.exists
 
+    - name: Secure shared memory
+      mount:
+        src: none
+        path: /run/shm
+        fstype: tmpfs
+        opts: defaults,ro
+        state: mounted
+
     - import_role:
         name: jnv.unattended-upgrades
       vars:
