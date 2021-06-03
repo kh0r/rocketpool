@@ -51,11 +51,14 @@
           net.ipv4.ip_forward: 1
 
 # CREATE USERS
-    - name: Add user admin
+    - name: Add users
       user:
-        name: admin
+        name: "{{ item }}"
         shell: /bin/bash
-        append: yes
+      with_items:
+      - admin
+      - rp
+
     - name: Allow admin to have passwordless sudo
       lineinfile:
         dest: /etc/sudoers
@@ -63,11 +66,6 @@
         regexp: '^%admin'
         line: '%admin ALL=(ALL) NOPASSWD: ALL'
         validate: visudo -cf %s
-    - name: Add user rp
-      user:
-        name: rp
-        shell: /bin/bash
-        append: yes
 
 # INSTALL DEPS
     # Needed for ansible to become unpriviledge user (see: https://github.com/georchestra/ansible/issues/55#issuecomment-588313638)
@@ -124,6 +122,6 @@
         - { option: "logpath", value: "%(sshd_log)s" }
         - { option: "maxretry", value: "5" }
     - name: Restart fail2ban
-      ansible.builtin.service:
+      service:
         name: fail2ban
         state: restarted
