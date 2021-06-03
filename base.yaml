@@ -127,7 +127,3 @@
       ansible.builtin.service:
         name: fail2ban
         state: restarted
-#    - name: Enable SELinux
-#      ansible.posix.selinux:
-#        policy: targeted
-#        state: enforcing
