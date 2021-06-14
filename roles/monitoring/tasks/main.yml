@@ -7,22 +7,24 @@
 - name: Configure Prysm beacon for Prometheus monitoring
   lineinfile:
     path: ~/.rocketpool/chains/eth2/start-beacon.sh
-    regexp: '^(.*/app/cmd/beacon-chain/beacon-chain )(?:(--.* )?(--monitoring-host \d+\.\d+\.\d+\.\d+ ))?((--.* )?--accept-terms-of-use.*)'
-    line: "\\1\\2--monitoring-host 0.0.0.0 \\4"
+    regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
+    line: "\\1--monitoring-host 0.0.0.0 \\2"
     backrefs: yes
+  register: beacon_result
 
 - name: Configure Prysm validator for Prometheus monitoring
   lineinfile:
     path: ~/.rocketpool/chains/eth2/start-validator.sh
-    regexp: '^(\s*exec /app/cmd/validator/validator )(?:(--.* )?(--monitoring-host \d+\.\d+\.\d+\.\d+ ))?((--.* )?--accept-terms-of-use.*\")'
-    line: "\\1\\2--monitoring-host 0.0.0.0 \\4"
+    regexp: '^(.*/app/cmd/validator/validator )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
+    line: "\\1--monitoring-host 0.0.0.0 \\2"
     backrefs: yes
+  register: validator_result
 
-# TODO: somehow check if there where any changes made to the startupscripts and only restart if that's the case.
-- name: Restart rocketpool to apply new settings
+- name: Restart rocketpool to apply new settings if they changed
   shell: ~/bin/rocketpool s p -y; ~/bin/rocketpool s s
+  when: beacon_result.changed or validator_result.changed
 
-- name: Start the monitoring stack
-  shell: docker-compose -f rocketpool_monitoring/docker-compose.yaml up -d --build --remove-orphans
-  args: 
-    chdir: /home/rp
+#- name: Start the monitoring stack
+#  shell: docker-compose -f rocketpool_monitoring/docker-compose.yaml up -d --build --remove-orphans
+#  args: 
+#    chdir: /home/rp
