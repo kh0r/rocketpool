@@ -13,6 +13,6 @@ rocket_pool:
           3535356435643136333436313833396461616135353934666661
   eth2:
     custom_graffiti: Ted the human
-    client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/
+    client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/pyrmont/
 hcloud:
   server_type: cpx41
