@@ -1,7 +1,7 @@
-public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhhN9UwN0AJ+PDVxie5aEN6jY+/J0UGakjOHpXT283l ted@mina
+public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhhN9UwN0AJ+PDVxie5aEN6jY+/J0UGakjOHpXT283l
+ansible_user: ted
 rocket_pool:
   version: 1.0.0-beta.3
-  network: pyrmont
   eth1:
     infura_project_id: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -13,5 +13,6 @@ rocket_pool:
           3535356435643136333436313833396461616135353934666661
   eth2:
     custom_graffiti: Ted the human
+    client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/
 hcloud:
   server_type: cpx41

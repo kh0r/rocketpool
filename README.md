@@ -20,3 +20,4 @@ ansible-playbook install-rocketpool.yaml --ask-vault-pass
   - recover with wallet mnemonics
   - upgrade?
 - monitoring etc - [inspiration](https://github.com/rel0aded/ansible-role-rocket-pool)
+- script/document SSH tunnel to access monitoring

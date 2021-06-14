@@ -1,7 +1,6 @@
 public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsgdn22Z0Y4yMT2TITZ3KzkGcmZR2Uc3TDzLp9wr4P1 ted@random
 rocket_pool:
   version: 1.0.0-beta.3
-  network: pyrmont
   eth1:
     infura_project_id: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -13,5 +12,6 @@ rocket_pool:
           3665343738323139303133666261356437616332323337333661
   eth2:
     custom_graffiti: Ted the human - dev
+    client_data_path: eth2clientdata
 hcloud:
   server_type: cpx31

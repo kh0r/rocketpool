@@ -12,7 +12,7 @@
         dest: ~/bin/rocketpool
         mode: u=rwx,g=rx,o=rx
     - name: Install rocketpool
-      shell: "~/bin/rocketpool service install -d -y --network {{ rocket_pool.network }}"
+      shell: "~/bin/rocketpool service install -d -y"
     - name: Configure Rocket Pool
       blockinfile:
         path: ~/.rocketpool/settings.yml
@@ -47,10 +47,15 @@
                   value: ""
                 - env: ETH2_P2P_PORT
                   value: "9001"
-    - name: Start Rocket Pool service
-      shell: ~/bin/rocketpool service start
+    - name: Set the eth2 client data path
+      lineinfile:
+        path: ~/.rocketpool/docker-compose.yml
+        search_string: 'eth2clientdata:/ethclient'
+        line: "      - {{ rocket_pool.eth2.client_data_path }}:/ethclient"
+#    - name: Start Rocket Pool service
+#      shell: ~/bin/rocketpool service start
 
-    - name: TODO - wait for eth1 and eth2 to be in sync
-      shell: echo "TODO - wait for eth1 & eth2"
-    - name: TODO - Init wallet (rocketpool wallet init)
-      shell: echo "TODO - rocketpool wallet recover --password <the-password> --mnemonic <mnemonic>"
+#    - name: TODO - wait for eth1 and eth2 to be in sync
+#      shell: echo "TODO - wait for eth1 & eth2"
+#    - name: TODO - Init wallet (rocketpool wallet init)
+#      shell: echo "TODO - rocketpool wallet recover --password <the-password> --mnemonic <mnemonic>"
