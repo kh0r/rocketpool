@@ -12,6 +12,9 @@ ansible-playbook vagrant.yaml base.yaml
 
 # Install and setup rocketpool (remember to set HCLOUD_TOKEN when using hetzner)
 ansible-playbook install-rocketpool.yaml --ask-vault-pass
+
+# Install monitoring
+ansible-playbook install-monitoring.yaml
 ```
 
 ### TODO
