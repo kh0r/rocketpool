@@ -50,8 +50,9 @@
     - name: Set the eth2 client data path
       lineinfile:
         path: ~/.rocketpool/docker-compose.yml
-        search_string: 'eth2clientdata:/ethclient'
-        line: "      - {{ rocket_pool.eth2.client_data_path }}:/ethclient"
+        regexp: '^(.*)(eth2clientdata)(:/ethclient)'
+        line: "\\1{{ rocket_pool.eth2.client_data_path }}\\3"
+        backrefs: yes
 #    - name: Start Rocket Pool service
 #      shell: ~/bin/rocketpool service start
 
