@@ -1,4 +1,4 @@
-- name: Install and setup Rocket Pool
+- name: Install and setup Rocket Pool, geth pruning and monitoring
   hosts: miners
   become: yes
   become_user: rp
@@ -11,6 +11,11 @@
         url: https://github.com/rocket-pool/smartnode-install/releases/download/{{ rocket_pool.version }}/rocketpool-cli-linux-amd64
         dest: ~/bin/rocketpool
         mode: u=rwx,g=rx,o=rx
+    # Needed by rocketpool installer
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
     - name: Install rocketpool
       shell: "~/bin/rocketpool service install -d -y"
     - name: Configure Rocket Pool
@@ -21,40 +26,86 @@
           chains:
             eth1:
               client:
-                selected: infura
+                selected: geth
                 params:
-                - env: INFURA_PROJECT_ID
-                  value: "{{ rocket_pool.eth1.infura_project_id }}"
-                - env: ETHSTATS_LABEL
-                  value: ""
-                - env: ETHSTATS_LOGIN
-                  value: ""
-                - env: GETH_CACHE_SIZE
-                  value: ""
-                - env: GETH_MAX_PEERS
-                  value: ""
                 - env: ETH1_P2P_PORT
-                  value: ""
-                - env: PROVIDER_URL
-                  value: ""
+                  value: "40404"
             eth2:
               client:
                 selected: prysm
                 params:
-                - env: CUSTOM_GRAFFITI
-                  value: "{{ rocket_pool.eth2.custom_graffiti }}"
-                - env: ETH2_MAX_PEERS
-                  value: ""
                 - env: ETH2_P2P_PORT
-                  value: "9001"
+                  value: "10002"
+
+    - name: Set the eth1 client data path
+      lineinfile:
+        path: ~/.rocketpool/docker-compose.yml
+        regexp: '^(.*)(?:eth1clientdata)(:/ethclient)'
+        line: "\\1{{ rocket_pool.eth1.client_data_path }}\\2"
+        backrefs: yes
+
     - name: Set the eth2 client data path
       lineinfile:
         path: ~/.rocketpool/docker-compose.yml
         regexp: '^(.*)(?:eth2clientdata)(:/ethclient)'
         line: "\\1{{ rocket_pool.eth2.client_data_path }}\\2"
         backrefs: yes
-#    - name: Start Rocket Pool service
-#      shell: ~/bin/rocketpool service start
+
+    - name: Configure Prysm beacon with fallback web3 provider
+      lineinfile:
+        path: ~/.rocketpool/chains/eth2/start-beacon.sh
+        regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--fallback-web3provider=\S* )?(.*)'
+        line: "\\1--fallback-web3provider={{ rocket_pool.eth1.fallback_web3provider }} \\2"
+        backrefs: yes
+
+    - name: Copy geth prune script
+      copy:
+        src: ./prune_geth.sh
+        dest: /home/rp/bin/
+        mode: preserve
+
+    - name: "Schedule monthly geth pruning"
+      cron:
+        name: "geth pruning"
+        minute: "0"
+        hour: "0"
+        day: "1"
+        user: "rp"
+        job: "/home/rp/bin/prune_geth.sh"
+
+    - name: Copy monitoring docker stack
+      copy:
+        src: ./monitoring/
+        dest: /home/rp/rocketpool_monitoring/
+
+    - name: Configue geth for Prometheus monitoring
+      lineinfile:
+        path: ~/.rocketpool/chains/eth1/start-node.sh
+        regexp: '^(.*\/usr\/local\/bin\/geth )(?:--metrics --pprof --pprof.addr \d+\.\d+\.\d+\.\d+ )?(.*)'
+        line: "\\1--metrics --pprof --pprof.addr 0.0.0.0 \\2"
+        backrefs: yes
+
+    - name: Configure Prysm beacon for Prometheus monitoring
+      lineinfile:
+        path: ~/.rocketpool/chains/eth2/start-beacon.sh
+        regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
+        line: "\\1--monitoring-host 0.0.0.0 \\2"
+        backrefs: yes
+
+    - name: Configure Prysm validator for Prometheus monitoring
+      lineinfile:
+        path: ~/.rocketpool/chains/eth2/start-validator.sh
+        regexp: '^(.*/app/cmd/validator/validator )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
+        line: "\\1--monitoring-host 0.0.0.0 \\2"
+        backrefs: yes
+
+    - name: Start Rocket Pool service
+      shell: ~/bin/rocketpool service start
+
+    #- name: Start the monitoring stack
+    #  shell: docker-compose -f rocketpool_monitoring/docker-compose.yaml up -d --build --remove-orphans
+    #  args: 
+    #    chdir: /home/rp
 
 #    - name: TODO - wait for eth1 and eth2 to be in sync
 #      shell: echo "TODO - wait for eth1 & eth2"

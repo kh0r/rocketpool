@@ -50,25 +50,34 @@
           # Enable IPv4 traffic forwarding. (for docker)
           net.ipv4.ip_forward: 1
 
-# CREATE USERS
-    - name: Add users
-      user:
-        name: "{{ item }}"
-        shell: /bin/bash
-      with_items:
-      - admin
-      - rp
-
-    - name: Allow admin to have passwordless sudo
-      lineinfile:
-        dest: /etc/sudoers
+# SETUP FIREWALL
+    - name: Install The Uncomplicated Firewall (ufw)
+      apt:
+        name: ufw
         state: present
-        regexp: '^%admin'
-        line: '%admin ALL=(ALL) NOPASSWD: ALL'
-        validate: visudo -cf %s
+    - name: Deny incoming and enable UFW
+      community.general.ufw:
+        state: enabled
+        direction: incoming
+        policy: deny
+    - name: Allow SSH, ETH1 and ETH2
+      community.general.ufw:
+        state: enabled
+        rule: allow
+        port: "{{ item }}"
+      with_items:
+        - 22
+        - 40404
+        - 10002
+
+# CREATE USER
+    - name: Create rocketpool user "rp"
+      user:
+        name: rp
+        shell: /bin/bash
 
 # INSTALL DEPS
-    # Needed for ansible to become unpriviledge user (see: https://github.com/georchestra/ansible/issues/55#issuecomment-588313638)
+    # Needed for ansible to become unprivileged user (see: https://github.com/georchestra/ansible/issues/55#issuecomment-588313638)
     - name: Install Access Control Lists (acl)
       apt:
         name: acl
@@ -84,26 +93,6 @@
         - admin
         - rp
   
-# SETUP FIREWALL
-    - name: Install The Uncomplicated Firewall (ufw)
-      apt:
-        name: ufw
-        state: present
-    - name: Deny incoming and enable UFW
-      community.general.ufw:
-        state: enabled
-        direction: incoming
-        policy: deny    
-    - name: Allow SSH
-      community.general.ufw:
-        state: enabled
-        rule: allow
-        name: OpenSSH
-    - name: Allow ETH2 (port 9001)
-      community.general.ufw:
-        rule: allow
-        port: 9001
-
     - name: Install fail2ban
       apt:
         name: fail2ban

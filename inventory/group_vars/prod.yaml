@@ -1,18 +1,10 @@
 public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhhN9UwN0AJ+PDVxie5aEN6jY+/J0UGakjOHpXT283l
-ansible_user: ted
 rocket_pool:
-  version: 1.0.0-beta.3
+  version: v1.0.0-rc3
   eth1:
-    infura_project_id: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          33343134396136306266626334363266393165643461396231303130386635376137613861383334
-          3464356439613433346662386365636335393833373065310a363461376465643464616631356561
-          33383339396139663439363263356264363266336665363765636230313164626366643737346261
-          3631343934333261310a396434313237623464326165633762393761363234333230386131303763
-          65346236383565353134356564653265633532383864363463336263303165313534613966633633
-          3535356435643136333436313833396461616135353934666661
+    client_data_path: /var/lib/fast/config/rocketpool/eth1clientdata/goerli/
+    fallback_web3provider: https://eth-goerli.gateway.pokt.network/v1/lb/60f87e0e331f6d0034c9ce3d
   eth2:
-    custom_graffiti: Ted the human
-    client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/pyrmont/
+    client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/prater/
 hcloud:
   server_type: cpx41

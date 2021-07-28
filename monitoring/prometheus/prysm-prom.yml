@@ -13,7 +13,12 @@ scrape_configs:
   - job_name: 'prometheus'
     scrape_interval: 5s
     static_configs:
-    - targets: ['rocketpool_monitoring_prometheus:9090']
+      - targets: ['rocketpool_monitoring_prometheus:9090']
+  - job_name: 'geth'
+    scrape_interval: 5s
+    metrics_path: /debug/metrics/prometheus
+    static_configs:
+      - targets: ['rocketpool_eth1:6060']
   - job_name: 'validator'
     scrape_interval: 5s
     static_configs:

@@ -1,8 +1,0 @@
-- name: Install monitoring
-  hosts: miners
-  become: yes
-  become_user: rp
-  tasks:
-    - name: Install monitoring
-      include_role:
-        name: monitoring

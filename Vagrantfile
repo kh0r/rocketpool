@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
     config.vm.network "forwarded_port", guest: 30303, host: 30303, protocol: "udp", id: "eth1 (udp)"
     config.vm.network "forwarded_port", guest: 9001, host: 9001, protocol: "tcp", id: "eth2 (tcp)"
     config.vm.network "forwarded_port", guest: 9001, host: 9001, protocol: "udp", id: "eth2 (udp)"
+    config.vm.network "forwarded_port", guest: 3000, host: 3000, protocol: "tcp", id: "grafana"
     
     config.vm.synced_folder '.', '/vagrant', disabled: true
     
