@@ -4,7 +4,7 @@
   tasks:
     - name: Create SSH key
       hcloud_ssh_key:
-        name: admin-key
+        name: ted-key
         public_key: "{{ public_ssh_key }}"
         state: present
       register: mining_key
@@ -17,12 +17,12 @@
         user_data: |
           #cloud-config
           users:
-          - name: admin
+          - name: ted
             sudo: ALL=(ALL) NOPASSWD:ALL
             ssh_authorized_keys:
               - {{ public_ssh_key }}"
         ssh_keys:
-          - admin-key # To make hetzner stop mailing me..
+          - ted-key # To make hetzner stop mailing me..
         labels:
           miner: "yes"
       register: mining_server

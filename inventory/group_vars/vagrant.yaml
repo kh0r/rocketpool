@@ -1,6 +1,6 @@
 public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFsgdn22Z0Y4yMT2TITZ3KzkGcmZR2Uc3TDzLp9wr4P1 ted@random
 rocket_pool:
-  version: v1.0.0-rc3
+  version: v1.0.0-rc4
   eth1:
     client_data_path: eth1clientdata
     fallback_web3provider: https://eth-goerli.gateway.pokt.network/v1/lb/60f87e0e331f6d0034c9ce3d

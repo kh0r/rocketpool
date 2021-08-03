@@ -83,14 +83,22 @@
         name: acl
         state: present
 
-    - import_role:
-        name: geerlingguy.ntp
+    # Needed by rocketpool installer
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
+    
+    - name: Install chrony
+      apt:
+        name: chrony
+        state: present
 
     - import_role:
         name: geerlingguy.docker
       vars:
         docker_users:
-        - admin
+        - ted
         - rp
   
     - name: Install fail2ban

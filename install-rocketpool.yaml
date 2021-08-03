@@ -11,11 +11,6 @@
         url: https://github.com/rocket-pool/smartnode-install/releases/download/{{ rocket_pool.version }}/rocketpool-cli-linux-amd64
         dest: ~/bin/rocketpool
         mode: u=rwx,g=rx,o=rx
-    # Needed by rocketpool installer
-    - name: Install curl
-      apt:
-        name: curl
-        state: present
     - name: Install rocketpool
       shell: "~/bin/rocketpool service install -d -y"
     - name: Configure Rocket Pool

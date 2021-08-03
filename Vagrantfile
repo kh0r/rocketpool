@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.provider "virtualbox" do |v|
       v.memory = 16384
-      v.cpus = 12
+      v.cpus = 8
     end
     
     config.vm.define "rocketpool-miner"
@@ -17,11 +17,11 @@ Vagrant.configure("2") do |config|
     config.vm.synced_folder '.', '/vagrant', disabled: true
     
     config.vm.provision "shell", inline: <<-SHELL
-      adduser admin --disabled-password --gecos ""
-      echo "admin ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/admin
-      sudo -u admin mkdir -m700 /home/admin/.ssh
-      sudo -u admin echo \"#{ENV['PUBLIC_SSH_KEY']}\" > /home/admin/.ssh/authorized_keys
-      chown admin:admin /home/admin/.ssh/authorized_keys
-      sudo -u admin chmod 600 /home/admin/.ssh/authorized_keys
+      adduser ted --disabled-password --gecos ""
+      echo "ted ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ted
+      sudo -u ted mkdir -m700 /home/ted/.ssh
+      sudo -u ted echo \"#{ENV['PUBLIC_SSH_KEY']}\" > /home/ted/.ssh/authorized_keys
+      chown ted:ted /home/ted/.ssh/authorized_keys
+      sudo -u ted chmod 600 /home/ted/.ssh/authorized_keys
     SHELL
   end
