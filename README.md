@@ -1,30 +1,63 @@
+Some scripts for provisioning a secure rocketpool node runner
+
+## Dependencies (ansible and plugins)
+Before you start you need to install ansible and some plugins on your local machine.
 ```bash
-# Install deps
-pip install ansible hcloud
-ansible-galaxy collection install hetzner.hcloud community.general
+pip install ansible
+ansible-galaxy collection install community.general
 ansible-galaxy install dev-sec.os-hardening dev-sec.ssh-hardening jnv.unattended-upgrades geerlingguy.docker
-
-# Use vagrant environment (or dev or prod)
-./env.sh vagrant
-
-# Create vagrant machine (or hetzner.yaml or manually add your own hosts) and do base provisioning
-ansible-playbook vagrant.yaml base.yaml
-
-# Install and setup rocketpool + monitoring (remember to set HCLOUD_TOKEN when using hetzner)
-ansible-playbook install-rocketpool.yaml
 ```
 
-### Provision NUC
+## Create a machine to run the node on
+Choose a target machine. 
+### Physical hardware
 ```bash
 # Install Debian - https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/
 # Burn to SD Card
-# Start install, press ESC and type `auto url=<host-of-preseed>:8000/preseed.cfg`
+# Start install, press ESC and type `auto url=<host-with-preseed>:8000/preseed.cfg`
 
-# Format the ssd?
-#fsck.ext4 /dev/disk/by-partuuid/ba8553b0-ca53-4570-bfa2-9ba6ba77016b
-echo "/dev/disk/by-partuuid/ba8553b0-ca53-4570-bfa2-9ba6ba77016b /var/lib/fast ext4 rw,relatime,stripe=8191 0 0" >> /etc/fstab
+# Format the disk?
+#fsck.ext4 /dev/disk/by-partuuid/<the-uuid>
+echo "/dev/disk/by-partuuid/<the-uuid> /var/lib/fast ext4 rw,relatime,stripe=8191 0 0" >> /etc/fstab
 ```
-### TODO
+
+### Vagrant
+For local testing
+```bash
+ansible-playbook vagrant.yaml
+```
+
+### Hetzner
+Or if you like the cloud
+
+```bash
+# Install hetzner plugins locally
+pip install hcloud
+ansible-galaxy collection install hetzner.hcloud
+
+# Create the machine
+ansible-playbook hatzner.yaml
+```
+
+## Set environment
+```bash
+# For vagrant just use ./env.sh vagrant
+# For hetzner skip the <ip-of-host> (it was automatically generated)
+./env.sh <environment> <ip-of-host>
+```
+
+## Provisioning
+```bash
+# Do base provisioning
+ansible-playbook base.yaml
+
+# Install and setup rocketpool + monitoring
+ansible-playbook install-rocketpool.yaml
+```
+Now rocketpool should be running and syncing with the chains.
+When it's done you can setup your wallet.
+
+## TODO
 - Finish the node - see [this](https://rocket-pool.readthedocs.io/en/latest/smart-node/introduction.html#introduction)
   - recover with wallet mnemonics
   - upgrade?

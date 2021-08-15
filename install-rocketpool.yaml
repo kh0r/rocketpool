@@ -12,7 +12,7 @@
         dest: ~/bin/rocketpool
         mode: u=rwx,g=rx,o=rx
     - name: Install rocketpool
-      shell: "~/bin/rocketpool service install -d -y"
+      shell: "~/bin/rocketpool service install -d -y -v {{ rocket_pool.version }}"
     - name: Configure Rocket Pool
       blockinfile:
         path: ~/.rocketpool/settings.yml
@@ -85,6 +85,12 @@
         path: ~/.rocketpool/chains/eth2/start-beacon.sh
         regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
         line: "\\1--monitoring-host 0.0.0.0 \\2"
+        backrefs: yes
+    - name: Configure prysm beacon for Prometheus monitoring continued...
+      lineinfile:
+        path: ~/.rocketpool/chains/eth2/start-beacon.sh
+        regexp: '^(.*CMD)(?: --disable-monitoring)(.*)'
+        line: "\\1\\2"
         backrefs: yes
 
     - name: Configure Prysm validator for Prometheus monitoring
