@@ -5,7 +5,6 @@ services:
     restart: "unless-stopped"
     build:
       context: ./prometheus
-    container_name: ${COMPOSE_PROJECT_NAME}_prometheus
     volumes:
       - /var/lib/fast/config/logging/prometheus/:/prometheus
     depends_on:
@@ -17,13 +16,11 @@ services:
   node-exporter:
     restart: "unless-stopped"
     image: prom/node-exporter
-    container_name: ${COMPOSE_PROJECT_NAME}_node-exporter
 
   blackbox-exporter:
     restart: "unless-stopped"
     build:
         context: ./blackbox
-    container_name: ${COMPOSE_PROJECT_NAME}_blackbox-exporter
     command:
       - --config.file=/config/blackbox.yml
   
@@ -31,12 +28,10 @@ services:
     restart: "unless-stopped"
     build:
         context: ./json
-    container_name: ${COMPOSE_PROJECT_NAME}_json-exporter
   
   cryptowat-exporter:
     restart: "unless-stopped"
     image: nbarrientos/cryptowat_exporter
-    container_name: ${COMPOSE_PROJECT_NAME}_cryptowat-exporter
     environment:
       - CRYPTOWAT_EXCHANGES=kraken
       - CRYPTOWAT_PAIRS=ethusd,ethchf
@@ -47,7 +42,6 @@ services:
     restart: "unless-stopped"
     build:
       context: ./grafana
-    container_name: ${COMPOSE_PROJECT_NAME}_grafana
     image: rpool-grafana
     volumes:
       - /var/lib/fast/config/logging/grafana/:/var/lib/grafana

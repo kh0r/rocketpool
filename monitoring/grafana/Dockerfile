@@ -40,4 +40,9 @@ RUN sed -i -e 's/\${DS_PROMETHEUS}/Prometheus/g' $geth_file
 RUN sed -i -e 's/\${VAR_JOB}/geth/g' $geth_file
 RUN tree /etc/grafana/provisioning/
 
+# rocketpool
+ARG rocketpool_url='https://github.com/rocket-pool/smartnode-install/releases/download/v1.0.0-rc6dev/dashboard_nimbus_v1.0.0.json'
+ARG rocketpool_file='/etc/grafana/provisioning/dashboards/rocketpool.json'
+RUN wget -qcO - $rocketpool_url | jq '.title = "Rocketpool"' >$rocketpool_file
+
 ENTRYPOINT [ "/run.sh" ]

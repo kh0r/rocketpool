@@ -72,6 +72,7 @@
       copy:
         src: ./monitoring/
         dest: /home/rp/rocketpool_monitoring/
+        mode: preserve
 
     - name: Configue geth for Prometheus monitoring
       lineinfile:
