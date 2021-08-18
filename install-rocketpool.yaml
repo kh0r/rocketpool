@@ -31,6 +31,8 @@
                 params:
                 - env: ETH2_P2P_PORT
                   value: "10002"
+          metrics:
+            enabled: true
 
     - name: Set the eth1 client data path
       lineinfile:
@@ -68,46 +70,36 @@
         user: "rp"
         job: "/home/rp/bin/prune_geth.sh"
 
-    - name: Copy monitoring docker stack
+    - name: Enable grafana provisioning through the mounted directory
+      replace:
+        path: ~/.rocketpool/docker-compose-metrics.yml
+        regexp: '^(  grafana:(?:.|\s)+?environment:\n)'
+        replace: "\\1      - GF_PATHS_PROVISIONING=/var/lib/grafana/provisioning\n"
+
+    - name: Set the grafana storage path
+      lineinfile:
+        path: ~/.rocketpool/docker-compose-metrics.yml
+        regexp: '^(.*)(?:grafana\-storage)(:/var/lib/grafana.*)'
+        line: "\\1{{ rocket_pool.grafana.storage_path }}\\2"
+        backrefs: yes
+
+    - name: Copy grafana provisioning
       copy:
-        src: ./monitoring/
-        dest: /home/rp/rocketpool_monitoring/
-        mode: preserve
-
-    - name: Configue geth for Prometheus monitoring
-      lineinfile:
-        path: ~/.rocketpool/chains/eth1/start-node.sh
-        regexp: '^(.*\/usr\/local\/bin\/geth )(?:--metrics --pprof --pprof.addr \d+\.\d+\.\d+\.\d+ )?(.*)'
-        line: "\\1--metrics --pprof --pprof.addr 0.0.0.0 \\2"
-        backrefs: yes
-
-    - name: Configure Prysm beacon for Prometheus monitoring
-      lineinfile:
-        path: ~/.rocketpool/chains/eth2/start-beacon.sh
-        regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
-        line: "\\1--monitoring-host 0.0.0.0 \\2"
-        backrefs: yes
-    - name: Configure prysm beacon for Prometheus monitoring continued...
-      lineinfile:
-        path: ~/.rocketpool/chains/eth2/start-beacon.sh
-        regexp: '^(.*CMD)(?: --disable-monitoring)(.*)'
-        line: "\\1\\2"
-        backrefs: yes
-
-    - name: Configure Prysm validator for Prometheus monitoring
-      lineinfile:
-        path: ~/.rocketpool/chains/eth2/start-validator.sh
-        regexp: '^(.*/app/cmd/validator/validator )(?:--monitoring-host \d+\.\d+\.\d+\.\d+ )?(.*)'
-        line: "\\1--monitoring-host 0.0.0.0 \\2"
-        backrefs: yes
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "0777"
+        directory_mode: "0777"
+      with_items:
+        - {src: "./monitoring/grafana/datasource.yml", dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/datasources/"}
+        - {src: "./monitoring/grafana/dashboard.yml", dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/dashboards/"}
+    
+    - name: Download rocketpool grafana dashboard
+      get_url:
+        url: "https://raw.githubusercontent.com/rocket-pool/smartnode-install/master/Dashboards/Rocket%20Pool%20Dashboard%20v1.0.0%20for%20Prysm.json"
+        dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/dashboards/"
 
     - name: Start Rocket Pool service
       shell: ~/bin/rocketpool service start
-
-    #- name: Start the monitoring stack
-    #  shell: docker-compose -f rocketpool_monitoring/docker-compose.yaml up -d --build --remove-orphans
-    #  args: 
-    #    chdir: /home/rp
 
 #    - name: TODO - wait for eth1 and eth2 to be in sync
 #      shell: echo "TODO - wait for eth1 & eth2"

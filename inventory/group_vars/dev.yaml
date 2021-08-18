@@ -6,5 +6,7 @@ rocket_pool:
     fallback_web3provider: https://eth-goerli.gateway.pokt.network/v1/lb/60f87e0e331f6d0034c9ce3d
   eth2:
     client_data_path: eth2clientdata
+  grafana:
+    storage_path: /tmp/grafana-storage
 hcloud:
   server_type: cpx31
