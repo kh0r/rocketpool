@@ -10,12 +10,18 @@ services:
     depends_on:
       - node-exporter
       - blackbox-exporter
-      - json-exporter
-      - cryptowat-exporter
 
   node-exporter:
     restart: "unless-stopped"
     image: prom/node-exporter
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--collector.textfile.directory=/host/textfile_collector"
+    volumes:
+      - /proc:/host/proc:ro,rslave
+      - /sys:/host/sys:ro,rslave
+      - /var/lib/node_exporter/textfile_collector:/host/textfile_collector:ro
 
   blackbox-exporter:
     restart: "unless-stopped"
@@ -23,20 +29,6 @@ services:
         context: ./blackbox
     command:
       - --config.file=/config/blackbox.yml
-  
-  json-exporter:
-    restart: "unless-stopped"
-    build:
-        context: ./json
-  
-  cryptowat-exporter:
-    restart: "unless-stopped"
-    image: nbarrientos/cryptowat_exporter
-    environment:
-      - CRYPTOWAT_EXCHANGES=kraken
-      - CRYPTOWAT_PAIRS=ethusd,ethchf
-      - CRYPTOWAT_CACHESECONDS=300
-      - TZ=Europe/Zurich
   
   grafana:
     restart: "unless-stopped"

@@ -1,4 +1,0 @@
-metrics:
-- name: ethusd
-  path: "{ .ethereum.usd }"
-  help: Ethereum (ETH) price in USD

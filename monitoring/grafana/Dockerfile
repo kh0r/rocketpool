@@ -18,14 +18,14 @@ ARG prysm_metanull_file='/etc/grafana/provisioning/dashboards/prysm_metanull.jso
 RUN wget -qcO - $prysm_metanull_url | jq '.title = "prysm_metanull"' >$prysm_metanull_file
 
 #  prysm_less_10
-ARG prysm_less_10_url='https://raw.githubusercontent.com/GuillaumeMiralles/prysm-grafana-dashboard/master/less_10_validators.json'
-ARG prysm_less_10_file='/etc/grafana/provisioning/dashboards/prysm_less_10.json'
-RUN wget -qcO - $prysm_less_10_url | jq '.title = "prysm_less_10"' >$prysm_less_10_file
+# ARG prysm_less_10_url='https://raw.githubusercontent.com/GuillaumeMiralles/prysm-grafana-dashboard/master/less_10_validators.json'
+# ARG prysm_less_10_file='/etc/grafana/provisioning/dashboards/prysm_less_10.json'
+# RUN wget -qcO - $prysm_less_10_url | jq '.title = "prysm_less_10"' >$prysm_less_10_file
 
 #  prysm_more_10
-ARG prysm_more_10_url='https://raw.githubusercontent.com/GuillaumeMiralles/prysm-grafana-dashboard/master/more_10_validators.json'
-ARG prysm_more_10_file='/etc/grafana/provisioning/dashboards/prysm_more_10.json'
-RUN wget -qcO - $prysm_more_10_url | jq '.title = "prysm_more_10"' >$prysm_more_10_file
+# ARG prysm_more_10_url='https://raw.githubusercontent.com/GuillaumeMiralles/prysm-grafana-dashboard/master/more_10_validators.json'
+# ARG prysm_more_10_file='/etc/grafana/provisioning/dashboards/prysm_more_10.json'
+# RUN wget -qcO - $prysm_more_10_url | jq '.title = "prysm_more_10"' >$prysm_more_10_file
 
 # prysm_ynager
 ARG prysm_ynager_url='https://raw.githubusercontent.com/ynager/grafana-eth-staking/main/dashboard.json'
@@ -41,8 +41,9 @@ RUN sed -i -e 's/\${VAR_JOB}/geth/g' $geth_file
 RUN tree /etc/grafana/provisioning/
 
 # rocketpool
-ARG rocketpool_url='https://github.com/rocket-pool/smartnode-install/releases/download/v1.0.0-rc6dev/dashboard_nimbus_v1.0.0.json'
+ARG rocketpool_url='https://raw.githubusercontent.com/rocket-pool/smartnode-install/master/Dashboards/Rocket%20Pool%20Dashboard%20v1.0.0%20for%20Prysm.json'
 ARG rocketpool_file='/etc/grafana/provisioning/dashboards/rocketpool.json'
 RUN wget -qcO - $rocketpool_url | jq '.title = "Rocketpool"' >$rocketpool_file
+RUN sed -i -e 's/\(job=\\"\)eth2/\1beacon node/g' $rocketpool_file
 
 ENTRYPOINT [ "/run.sh" ]
