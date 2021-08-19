@@ -88,7 +88,13 @@
       apt:
         name: curl
         state: present
-    
+
+    # Needed for timestamps in cron log
+    - name: Install moreutils
+      apt:
+        name: moreutils
+        state: present
+
     - name: Install chrony
       apt:
         name: chrony

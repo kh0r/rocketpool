@@ -41,7 +41,7 @@
         line: "\\1{{ rocket_pool.eth1.client_data_path }}\\2"
         backrefs: yes
 
-    - name: Set the eth2 client data path to 
+    - name: "Set the eth2 client data path to '{{ rocket_pool.eth2.client_data_path }}'"
       lineinfile:
         path: ~/.rocketpool/docker-compose.yml
         regexp: '^(.*)(?:eth2clientdata)(:/ethclient)'
@@ -58,7 +58,7 @@
     - name: Copy geth prune script
       copy:
         src: ./prune_geth.sh
-        dest: /home/rp/bin/
+        dest: ~/bin/
         mode: preserve
 
     - name: "Schedule monthly geth pruning"
@@ -68,12 +68,12 @@
         hour: "0"
         day: "1"
         user: "rp"
-        job: "/home/rp/bin/prune_geth.sh"
+        job: "~/bin/prune_geth.sh 2>&1 | ts >> ~/prune_geth.log"
 
     - name: Copy grafana provisioning
       copy:
         src: "./grafana/"
-        dest: "/home/rp/.rocketpool/grafana/"
+        dest: "~/.rocketpool/grafana/"
 
     - name: Configure grafana provisioning mount in docker-compose-metrics.yml
       replace:

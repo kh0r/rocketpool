@@ -6,7 +6,8 @@ ETH1_DATA_VOLUME=$( docker inspect -f '{{ json .Mounts }}' $CONTAINER_NAME | jq 
 fail() {
     MESSAGE=$1
     RED='\033[0;31m'
-    >&2 echo -e "\n${RED}**ERROR**\n$MESSAGE"
+    COLOR_RESET='\033[0m'
+    >&2 echo -e "${RED}**ERROR** - ${MESSAGE}${COLOR_RESET}"
     exit 1
 }
 
@@ -21,5 +22,5 @@ echo "Stopping geth..."
 docker stop $CONTAINER_NAME || fail "Could not stop $CONTAINER_NAME"
 
 echo "Running the pruner..."
-docker run --rm -it -v $ETH1_DATA_VOLUME:/ethclient ethereum/client-go:v$GETH_VERSION snapshot prune-state --goerli --datadir /ethclient/geth || fail "Failed to start pruning"
+docker run --rm -v $ETH1_DATA_VOLUME:/ethclient ethereum/client-go:v$GETH_VERSION snapshot prune-state --goerli --datadir /ethclient/geth || fail "Failed to start pruning"
 echo "Done pruning!"
