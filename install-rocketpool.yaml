@@ -6,7 +6,7 @@
     - file:
         state: directory
         path: ~/bin
-    - name: Download Rocket Pool binary
+    - name: "Download Rocket Pool binary ({{ rocket_pool.version }})"
       get_url:
         url: https://github.com/rocket-pool/smartnode-install/releases/download/{{ rocket_pool.version }}/rocketpool-cli-linux-amd64
         dest: ~/bin/rocketpool
@@ -34,21 +34,21 @@
           metrics:
             enabled: true
 
-    - name: Set the eth1 client data path
+    - name: "Set the eth1 client data path to '{{ rocket_pool.eth1.client_data_path }}'"
       lineinfile:
         path: ~/.rocketpool/docker-compose.yml
         regexp: '^(.*)(?:eth1clientdata)(:/ethclient)'
         line: "\\1{{ rocket_pool.eth1.client_data_path }}\\2"
         backrefs: yes
 
-    - name: Set the eth2 client data path
+    - name: Set the eth2 client data path to 
       lineinfile:
         path: ~/.rocketpool/docker-compose.yml
         regexp: '^(.*)(?:eth2clientdata)(:/ethclient)'
         line: "\\1{{ rocket_pool.eth2.client_data_path }}\\2"
         backrefs: yes
 
-    - name: Configure Prysm beacon with fallback web3 provider
+    - name: "Configure Prysm beacon with fallback web3 provider to '{{ rocket_pool.eth1.fallback_web3provider }}'"
       lineinfile:
         path: ~/.rocketpool/chains/eth2/start-beacon.sh
         regexp: '^(.*\/app\/cmd\/beacon-chain\/beacon-chain )(?:--fallback-web3provider=\S* )?(.*)'
@@ -70,34 +70,24 @@
         user: "rp"
         job: "/home/rp/bin/prune_geth.sh"
 
-    - name: Enable grafana provisioning through the mounted directory
-      replace:
-        path: ~/.rocketpool/docker-compose-metrics.yml
-        regexp: '^(  grafana:(?:.|\s)+?environment:\n)'
-        replace: "\\1      - GF_PATHS_PROVISIONING=/var/lib/grafana/provisioning\n"
-
-    - name: Set the grafana storage path
-      lineinfile:
-        path: ~/.rocketpool/docker-compose-metrics.yml
-        regexp: '^(.*)(?:grafana\-storage)(:/var/lib/grafana.*)'
-        line: "\\1{{ rocket_pool.grafana.storage_path }}\\2"
-        backrefs: yes
-
     - name: Copy grafana provisioning
       copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        mode: "0777"
-        directory_mode: "0777"
-      with_items:
-        - {src: "./monitoring/grafana/datasource.yml", dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/datasources/"}
-        - {src: "./monitoring/grafana/dashboard.yml", dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/dashboards/"}
-    
-    - name: Download rocketpool grafana dashboard
-      get_url:
-        url: "https://raw.githubusercontent.com/rocket-pool/smartnode-install/master/Dashboards/Rocket%20Pool%20Dashboard%20v1.0.0%20for%20Prysm.json"
-        dest: "{{ rocket_pool.grafana.storage_path }}/provisioning/dashboards/"
+        src: "./grafana/"
+        dest: "/home/rp/.rocketpool/grafana/"
 
+    - name: Configure grafana provisioning mount in docker-compose-metrics.yml
+      replace:
+        path: ~/.rocketpool/docker-compose-metrics.yml
+        regexp: '^(  grafana:(?:.|\s)+?volumes:\n)'
+        replace: "\\1      - \"./grafana/:/etc/grafana/provisioning/\"\n"
+
+    - name: "Set the prometheus data path to '{{ rocket_pool.prometheus.data_path }}'"
+      lineinfile:
+        path: ~/.rocketpool/docker-compose-metrics.yml
+        regexp: '^(.*)(?:prometheus\-data)(:/prometheus.*)'
+        line: "\\1{{ rocket_pool.prometheus.data_path }}\\2"
+        backrefs: yes
+    
     - name: Start Rocket Pool service
       shell: ~/bin/rocketpool service start
 
