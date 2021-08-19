@@ -64,11 +64,13 @@
       community.general.ufw:
         state: enabled
         rule: allow
-        port: "{{ item }}"
+        port: "{{ item.port }}"
+        comment: "{{ item.comment }}"
       with_items:
-        - 22
-        - 40404
-        - 10002
+        - { port: 22, comment: "Allow to SSH" }
+        - { port: 40404, comment: "Allow geth p2p" }
+        - { port: 10002, comment: "Allow prysm p2p" }
+        - { port: 9103, comment: "Allow node-exporter access to prometheus" }
 
 # CREATE USER
     - name: Create rocketpool user "rp"
