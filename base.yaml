@@ -68,8 +68,8 @@
         comment: "{{ item.comment }}"
       with_items:
         - { port: 22, comment: "Allow to SSH" }
-        - { port: 40404, comment: "Allow geth p2p" }
-        - { port: 10002, comment: "Allow prysm p2p" }
+        - { port: 30303, comment: "Allow geth p2p" }
+        - { port: 9001, comment: "Allow prysm p2p" }
         - { port: 9103, comment: "Allow node-exporter access to prometheus" }
 
 # CREATE USER

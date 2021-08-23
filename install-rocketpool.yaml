@@ -22,15 +22,9 @@
             eth1:
               client:
                 selected: geth
-                params:
-                - env: ETH1_P2P_PORT
-                  value: "40404"
             eth2:
               client:
                 selected: prysm
-                params:
-                - env: ETH2_P2P_PORT
-                  value: "10002"
           metrics:
             enabled: true
 
