@@ -58,9 +58,10 @@
     - name: "Schedule monthly geth pruning"
       cron:
         name: "geth pruning"
-        minute: "0"
-        hour: "0"
+        minute: "30"
+        hour: "3"
         day: "1"
+        month: "*/3"
         user: "rp"
         job: "~/bin/prune_geth.sh 2>&1 | ts >> ~/prune_geth.log"
 
