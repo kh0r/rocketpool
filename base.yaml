@@ -102,6 +102,11 @@
         name: chrony
         state: present
 
+    - name: Install htop
+      apt:
+        name: htop
+        state: present
+
     - import_role:
         name: geerlingguy.docker
       vars:
@@ -131,3 +136,13 @@
       service:
         name: fail2ban
         state: restarted
+
+# Some tuning for Rocketpool
+    - name: Set swappiness to 6
+      ansible.posix.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+      with_items:
+        - { name: "vm.swappiness", value: "6" }
+        - { name: "vm.vfs_cache_pressure", value: "10" }

@@ -86,6 +86,10 @@
     - name: Start Rocket Pool service
       shell: ~/bin/rocketpool service start
 
+# TODO: do this?
+#    - name: Install Rocket Pool update tracker
+#      shell: ~/bin/rocketpool service install-update-tracker -y
+
 #    - name: TODO - wait for eth1 and eth2 to be in sync
 #      shell: echo "TODO - wait for eth1 & eth2"
 #    - name: TODO - Init wallet (rocketpool wallet init)
