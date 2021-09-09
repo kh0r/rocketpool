@@ -23,12 +23,13 @@ Choose a target machine.
 cd nuc
 ./create_preseed_iso.sh
 
-# Burn that to USB stick
-# Start install
+# Burn that to USB stick and start install
 
 # Format the disk?
-#fsck.ext4 /dev/disk/by-partuuid/<the-uuid>
-echo "/dev/disk/by-partuuid/<the-uuid> /var/lib/fast ext4 rw,relatime,stripe=8191 0 0" >> /etc/fstab
+#mkfs.ext4 /dev/disk/by-id/<the-id>
+
+# automount the disk
+echo "/dev/disk/by-uuid/8a7a5935-1c6a-47ad-bdba-13f0377cf61d /var/lib/fast ext4 rw,relatime,stripe=8191 0 0" >> /etc/fstab
 ```
 
 ### Vagrant
