@@ -3,7 +3,7 @@ rocket_pool:
   version: v1.0.0-pre
   eth1:
     client_data_path: /var/lib/fast/config/rocketpool/eth1clientdata/mainnet/
-    fallback_web3provider: https://eth-goerli.gateway.pokt.network/v1/lb/60f87e0e331f6d0034c9ce3d
+    fallback_web3provider: https://eth-mainnet.gateway.pokt.network/v1/lb/60f86d5a331f6d0034c9ce37
   eth2:
     client_data_path: /var/lib/fast/config/rocketpool/eth2clientdata/mainnet/
   prometheus:
