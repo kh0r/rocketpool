@@ -1,4 +1,4 @@
-public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJhhN9UwN0AJ+PDVxie5aEN6jY+/J0UGakjOHpXT283l
+public_ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFiu3f18rw0FetTEmX7TtuZfXcNaRQmTm+aMKhvZvOw0
 rocket_pool:
   version: v1.0.0-pre
   eth1:
