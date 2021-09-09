@@ -12,9 +12,12 @@ ansible-galaxy install dev-sec.os-hardening dev-sec.ssh-hardening jnv.unattended
 Choose a target machine. 
 ### Physical hardware
 ```bash
-# Install Debian - https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/
-# Burn to SD Card
-# Start install, press ESC and type `auto url=<host-with-preseed>:8000/preseed.cfg`
+# Build preseeded debian ISO by running the script in `nuc`
+cd nuc
+./create_preseed_iso.sh
+
+# Burn that to USB stick
+# Start install
 
 # Format the disk?
 #fsck.ext4 /dev/disk/by-partuuid/<the-uuid>
