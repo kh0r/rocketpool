@@ -55,15 +55,15 @@
         dest: ~/bin/
         mode: preserve
 
-    - name: "Schedule monthly geth pruning"
-      cron:
-        name: "geth pruning"
-        minute: "30"
-        hour: "3"
-        day: "1"
-        month: "*/3"
-        user: "rp"
-        job: "~/bin/prune_geth.sh 2>&1 | ts >> ~/prune_geth.log"
+#    - name: "Schedule monthly geth pruning"
+#      cron:
+#        name: "geth pruning"
+#        minute: "30"
+#        hour: "3"
+#        day: "1"
+#        month: "*/3"
+#        user: "rp"
+#        job: "~/bin/prune_geth.sh 2>&1 | ts >> ~/prune_geth.log"
 
     - name: "Set the prometheus data path to '{{ rocket_pool.prometheus.data_path }}'"
       lineinfile:
