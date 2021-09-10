@@ -28,6 +28,8 @@ cd nuc
 # Format the disk?
 #mkfs.ext4 /dev/disk/by-id/<the-id>
 
+# Don't forget to `chown 65534:65534 /path/to/prometheus/mount`.
+
 # automount the disk
 echo "/dev/disk/by-uuid/8a7a5935-1c6a-47ad-bdba-13f0377cf61d /var/lib/fast ext4 rw,relatime,stripe=8191 0 0" >> /etc/fstab
 ```
