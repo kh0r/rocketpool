@@ -52,7 +52,7 @@ pip install hcloud
 ansible-galaxy collection install hetzner.hcloud
 
 # Create the machine
-ansible-playbook hatzner.yaml
+ansible-playbook hetzner.yaml
 ```
 
 ## Set environment
